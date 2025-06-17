@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { SupabaseService } from './supabase/supabase.service';
 import { TodosModule } from './todos/todos.module';
 import { UsersModule } from './users/users.module';
+import { VerificationsModule } from './verifications/verifications.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UsersModule } from './users/users.module';
     }),
     TodosModule,
     UsersModule,
+    VerificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService, SupabaseService],

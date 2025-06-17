@@ -6,6 +6,7 @@ TodoWith 앱의 백엔드 API 서버입니다. NestJS와 Supabase를 사용하�
 
 - **Framework**: NestJS (Node.js)
 - **Database**: Supabase (PostgreSQL)
+- **Storage**: Supabase Storage
 - **Language**: TypeScript
 - **Package Manager**: npm
 
@@ -14,13 +15,18 @@ TodoWith 앱의 백엔드 API 서버입니다. NestJS와 Supabase를 사용하�
 ### 1. 익명 사용자 관리
 - 앱 최초 실행 시 자동으로 `user_code` 생성 (예: `user_ABC123`)
 - 중복 방지를 위한 자동 재생성 로직
-- 로컬 저장을 위한 복구 코드 제공(예정)
+- 로컬 저장을 위한 복구 코드 제공
 
 ### 2. 할일 관리 (CRUD)
 - 할일 목록 조회: `GET /todos?userCode=user_ABC123`
 - 할일 생성: `POST /todos`
 - 할일 수정: `PATCH /todos/:id`
 - 할일 삭제: `DELETE /todos/:id`
+
+### 3. 사진 인증
+- 카메라로 촬영한 인증 사진 업로드
+- 서버 시간 기준 타임스탬프 저장
+- Supabase Storage를 통한 이미지 저장
 
 ## 🛠️ 설치 및 실행
 
@@ -67,6 +73,7 @@ npm run start:prod
     }
   ]
   ```
+
 - `POST /todos` - 새 할일 생성
   ```json
   // 요청
@@ -85,6 +92,7 @@ npm run start:prod
     "updated_at": "2025-06-16T..."
   }
   ```
+
 - `PATCH /todos/:id` - 할일 수정
   ```json
   // 요청
@@ -103,9 +111,51 @@ npm run start:prod
     "updated_at": "2025-06-16T..."
   }
   ```
+
 - `DELETE /todos/:id` - 할일 삭제
   ```json
   // 응답: 200 OK (성공적으로 삭제됨)
+  ```
+
+### 사진 인증
+- `POST /verifications/upload` - 인증 사진 업로드
+  ```json
+  // 요청 (multipart/form-data)
+  Form Data:
+  - image: [파일]
+  - userCode: "user_ABC123"
+  
+  // 응답
+  {
+    "id": "uuid-format-id",
+    "user_id": "user-uuid",
+    "image_url": "https://supabase.co/storage/v1/object/public/verifications/user_ABC123_1234567890.jpg",
+    "verified_at": "2025-06-17T..."
+  }
+  ```
+
+- `GET /verifications?userCode=user_ABC123` - 전체 인증 기록 조회
+  ```json
+  [
+    {
+      "id": "uuid-format-id",
+      "user_id": "user-uuid",
+      "image_url": "https://supabase.co/storage/v1/object/public/verifications/user_ABC123_1234567890.jpg",
+      "verified_at": "2025-06-17T..."
+    }
+  ]
+  ```
+
+- `GET /verifications/today?userCode=user_ABC123` - 오늘 인증 기록 조회
+  ```json
+  [
+    {
+      "id": "uuid-format-id",
+      "user_id": "user-uuid",
+      "image_url": "https://supabase.co/storage/v1/object/public/verifications/user_ABC123_1234567890.jpg",
+      "verified_at": "2025-06-17T..."
+    }
+  ]
   ```
 
 ## 🏗️ 프로젝트 구조
@@ -123,6 +173,12 @@ todowith-server/
 │   │   ├── todos.controller.ts
 │   │   ├── todos.service.ts
 │   │   └── todos.module.ts
+│   ├── verifications/      # 사진 인증
+│   │   ├── interfaces/
+│   │   │   └── verification.interface.ts
+│   │   ├── verifications.controller.ts
+│   │   ├── verifications.service.ts
+│   │   └── verifications.module.ts
 │   ├── supabase/           # Supabase 연동
 │   │   └── supabase.service.ts
 │   ├── app.module.ts       # 메인 모듈
@@ -133,7 +189,6 @@ todowith-server/
 
 ## 🚧 개발 예정 기능
 
-- [ ] 사진 인증 모듈
 - [ ] 그룹 생성 및 참여
 - [ ] 공유 기능 (카카오톡, 이미지 저장)
 - [ ] 누적 공부시간 저장
