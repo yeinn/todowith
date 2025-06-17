@@ -55,21 +55,58 @@ npm run start:prod
 
 ### 할일 관리
 - `GET /todos?userCode=user_ABC123` - 사용자의 할일 목록 조회
+  ```json
+  [
+    {
+      "id": "uuid-format-id",
+      "user_id": "user-uuid",
+      "text": "할일 내용",
+      "completed": false,
+      "created_at": "2025-06-16T...",
+      "updated_at": "2025-06-16T..."
+    }
+  ]
+  ```
 - `POST /todos` - 새 할일 생성
   ```json
+  // 요청
   {
     "userCode": "user_ABC123",
     "text": "새로운 할일입니다."
   }
+  
+  // 응답
+  {
+    "id": "uuid-format-id",
+    "user_id": "user-uuid",
+    "text": "새로운 할일입니다.",
+    "completed": false,
+    "created_at": "2025-06-16T...",
+    "updated_at": "2025-06-16T..."
+  }
   ```
 - `PATCH /todos/:id` - 할일 수정
   ```json
+  // 요청
   {
     "text": "수정된 할일",
     "completed": true
   }
+  
+  // 응답
+  {
+    "id": "uuid-format-id",
+    "user_id": "user-uuid",
+    "text": "수정된 할일",
+    "completed": true,
+    "created_at": "2025-06-16T...",
+    "updated_at": "2025-06-16T..."
+  }
   ```
 - `DELETE /todos/:id` - 할일 삭제
+  ```json
+  // 응답: 200 OK (성공적으로 삭제됨)
+  ```
 
 ## 🏗️ 프로젝트 구조
 
