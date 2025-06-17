@@ -61,10 +61,18 @@ export class UsersService {
       .getClient()
       .from('users')
       .select('*')
-      .eq('user_code', userCode)
-      .single();
+      .eq('user_code', userCode);
 
-    if (error) throw error;
-    return data;
+    if (error) {
+      console.error('Error fetching user by code:', error);
+      throw error;
+    }
+
+    // 사용자가 없으면 null 반환
+    if (!data || data.length === 0) {
+      return null;
+    }
+
+    return data[0];
   }
 } 
